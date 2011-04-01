@@ -1,4 +1,5 @@
-from django.db import models, connections
+from django.contrib.gis.db import models
+from django.db import connections
 from django.db.models.signals import post_syncdb
 
 HOUSE = 'HOUSE'
@@ -9,7 +10,7 @@ DISTRICT_TYPES = (
     (SENATE, 'Senate'),
 )
 
-class DistrictManager(models.Manager):
+class DistrictManager(models.GeoManager):
     def filter_by_lat_lng(self, lat, lng):
         point_text = "POINT(%f %f)" % (lng, lat)
         return self.get_query_set().extra(
@@ -28,6 +29,7 @@ class District(models.Model):
     type = models.CharField(max_length=100, choices=DISTRICT_TYPES)
     number = models.IntegerField()
     year = models.IntegerField()
+    geometry = models.MultiPolygonField()
 
     def __unicode__(self):
         return u'%s District %d' % (self.get_type_display(), self.number)
