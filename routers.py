@@ -1,11 +1,9 @@
-from .models import District
-
 class DistrictRouter(object):
     """
     Routes reads/writes for the District model to the `districts` DB
     """
     def db_for_read(self, model, **hints):
-        if model == District:
+        if model._meta.app_label == 'districts':
             return 'districts'
         return None
 
@@ -17,7 +15,7 @@ class DistrictRouter(object):
 
     def allow_syncdb(self, db, model):
         if db == 'districts':
-            return model == District
-        elif model == District:
+            return model._meta.app_label == 'districts'
+        elif model._meta.app_label == 'districts':
             return False
         return None
