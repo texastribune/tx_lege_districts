@@ -1,15 +1,12 @@
 from django.test import TestCase
 from django.db import connections
+from django.core.management import call_command
 
 from districts.models import District, HOUSE, SENATE
 
 class ModelTest(TestCase):
-    def setUp(self):
-        cursor = connections['districts'].cursor()
-        cursor.execute("DROP TABLE districts_district")
-        sql = open('districts/fixtures/districts.sql').read()
-        for statement in sql.split(';\n'):
-            cursor.execute(statement)
+    multi_db = True
+    fixtures = ['districts_2006']
 
     def test_unicode(self):
         district = District(number=1, type=HOUSE)
