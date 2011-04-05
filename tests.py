@@ -41,5 +41,5 @@ class DistrictsTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['senate']['number'], 14)
         self.assertEqual(data['house']['number'], 48)
-        self.assertEqual('geometry' in data['senate'], True)
-        self.assertEqual('geometry' in data['house'], True)
+        self.assertEqual('coordinates' in data['senate'], True)
+        self.assertEqual('coordinates' in data['house'], True)
