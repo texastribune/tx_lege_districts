@@ -15,7 +15,7 @@ class DistrictRouter(object):
 
     def allow_syncdb(self, db, model):
         if db == 'districts':
-            return model._meta.app_label == 'districts'
+            return model._meta.app_label in ('districts', 'sites')
         elif model._meta.app_label == 'districts':
             return False
         return None
