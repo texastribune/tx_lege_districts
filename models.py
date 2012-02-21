@@ -12,9 +12,7 @@ DISTRICT_TYPES = (
 class DistrictManager(models.GeoManager):
     def filter_by_lat_lng(self, lat, lng):
         point_text = "POINT(%f %f)" % (lng, lat)
-        return self.get_query_set().extra(
-                where=["Contains(geometry, PointFromText(%s))"],
-                params=(point_text,))
+        return self.get_query_set().filter(geometry__contains=point_text)
 
 
 class District(models.Model):
