@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Demo Map</title>
+
+    <style type="text/css" media="screen">
+        body {
+            color: #333;
+        }
+    
+        #map_canvas {
+            width: 300px;
+            height: 200px;
+        }
+        
+        #search, #districts {
+            padding: 5px;
+        }
+        
+        #zip {
+            width: 220px;
+        }
+        
+        #submit {
+            width: 60px;
+        }
+        
+        #districts .key {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #333;
+            opacity: 0.4;
+        }
+        
+        #districts #house .key {
+            background-color: #FF0000;
+        }
+        
+        #districts #senate .key {
+            background-color: #0000FF;
+        }
+        
+        .prompt {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        var overlays = new Array();
+        function clear_overlays() {
+            if (overlays) {
+                for (i in overlays) {
+                    overlays[i].setMap(null);
+                }
+            }
+        }
+
+        function add_overlay(map, coordinates, fill_color) {
+            $(coordinates).each(function(p) {
+                var paths = new Array();
+                $(coordinates[p][0]).each(function(c) {
+                    var lat = coordinates[p][0][c][1];
+                    var lng = coordinates[p][0][c][0];
+                    var lat_lng = new google.maps.LatLng(lat, lng);
+                    paths.push(lat_lng);
+                });
+
+                polygon = new google.maps.Polygon({
+                    paths: paths,
+                    strokeColor: "#333333",
+                    strokeOpacity: 0.5,
+                    strokeWeight: 1,
+                    fillColor: fill_color,
+                    fillOpacity: 0.2
+                });
+
+                polygon.setMap(map);
+                overlays.push(polygon);
+            });
+        }
+
+        function lookup_district(map, lat_lng) {
+            map.panTo(lat_lng);
+            clear_overlays();
+
+            var marker = new google.maps.Marker({
+                position: lat_lng,
+                map: map,
+                draggable:true,
+                animation: google.maps.Animation.DROP
+            });
+            overlays.push(marker);
+            
+            var dragged = false;
+            google.maps.event.addListener(marker, 'drag', function() {
+                dragged = true;
+            });
+            google.maps.event.addListener(marker, 'mouseup', function() {
+                if (dragged == true) {
+                    dragged = false;
+                    lookup_district(map, marker.getPosition());
+                }
+            });
+
+            $.ajax({
+                url: "{{ lookup_url }}?" +
+                    "lat=" + lat_lng.lat() + "&lng=" + lat_lng.lng(),
+                success: function(data) {
+                    if (data.house) {
+                        add_overlay(map, data.house.coordinates, "#FF0000");
+                        $("#districts #house .name").text(data.house.name);
+                        $("#house").removeClass("hidden");
+                    } else {
+                        $("#house").addClass("hidden");
+                    }
+                    
+                    if (data.senate) {
+                        add_overlay(map, data.senate.coordinates, "#0000FF");   
+                        $("#districts #senate .name").text(data.senate.name);
+                        $("#senate").removeClass("hidden");
+                    } else {
+                        $("#senate").addClass("hidden");
+                    }
+                }
+            });
+        }
+
+        function initialize_district_map() {
+            var client_location = {};
+            if(google.loader.ClientLocation) {
+                client_location.lat = google.loader.ClientLocation.latitude;
+                client_location.lng = google.loader.ClientLocation.longitude;
+
+                var lat_lng = new google.maps.LatLng(
+                    client_location.lat, client_location.lng);
+            }
+
+            var options = {
+                zoom: 10,
+                center: lat_lng || new google.maps.LatLng(30.3037, -97.7696),
+                disableDefaultUI: true,
+                zoomControl: true,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            var canvas = document.getElementById("map_canvas");
+            var map = new google.maps.Map(canvas, options);
+
+            if (typeof(lat_lng) != undefined) {
+                lookup_district(map, lat_lng);
+            }
+
+            $("#search form").submit(function() {
+                var address = $("#zip").val();
+                var geocoder = new google.maps.Geocoder();
+                var params = {
+                    address: address,
+                    region: 'US'
+                };
+                geocoder.geocode(params, function(results, status) {
+                    if(status == google.maps.GeocoderStatus.OK) {
+                        console.log(results[0]);
+                        lookup_district(map, results[0].geometry.location);
+                    };
+                });
+
+                return false;
+            });
+            
+            $("#zip").focus(function() {
+                $(this).val("");
+                $(this).removeClass("prompt");
+            })
+        }
+
+        google.load("maps", "3.x", {
+            other_params: "sensor=false",
+            callback: initialize_district_map
+        });
+    </script>
+</head>
+<body>
+    <div id="map_canvas" class="district-map"></div>
+    <div id="search">
+        <form action="#">
+            <input type="text" id="zip" name="zip" class="prompt" value="Address or zip code" /> 
+            <input type="submit" name="submit" value="Search" id="submit" />
+        </form>
+    </div>
+    <div id="districts">
+        <div id="house" class="hidden">
+            <span class="key"></span> 
+            <span class="name"></span>
+        </div>
+        <div id="senate" class="hidden">
+            <span class="key"></span> 
+            <span class="name"></span>
+        </div>
+    </div>
+</body>
+</html>

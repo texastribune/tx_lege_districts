@@ -1,0 +1,163 @@
+{% comment %}
+{% block setf_fun_fun_fun_fun_fun %}{% endblock %}
+Usage:
+    {% include "districts/includes/widget.html" %}
+    listen to $(document).bind('districtsReceived');
+Assumes: jQuery is loaded. If this will be loaded via ajax, you should load
+    google jsapi yourself.
+{% endcomment %}
+    <div id="districts_map_canvas" style="width: 200px; height: 200px;"></div>
+    <script>window.google || document.write('<script src="http://www.google.com/jsapi">\x3C/script>');</script>
+    <script>
+        var overlays = [];
+        function clear_overlays() {
+            overlays.forEach(function(overlay){
+                overlay.setMap(null);
+            });
+        }
+
+        function add_overlay(map, coordinates, fill_color) {
+            $(coordinates).each(function(p) {
+                var paths = [];
+                $(coordinates[p][0]).each(function(c) {
+                    var lat = coordinates[p][0][c][1];
+                    var lng = coordinates[p][0][c][0];
+                    var lat_lng = new google.maps.LatLng(lat, lng);
+                    paths.push(lat_lng);
+                });
+
+                polygon = new google.maps.Polygon({
+                    paths: paths,
+                    strokeColor: "#333333",
+                    strokeOpacity: 0.5,
+                    strokeWeight: 1,
+                    fillColor: fill_color,
+                    fillOpacity: 0.2
+                });
+
+                polygon.setMap(map);
+                overlays.push(polygon);
+            });
+        }
+
+        function lookup_district(map, lat_lng) {
+            map.panTo(lat_lng);
+            clear_overlays();
+
+            var marker = new google.maps.Marker({
+                position: lat_lng,
+                map: map,
+                draggable:true,
+                animation: google.maps.Animation.DROP
+            });
+            overlays.push(marker);
+
+            var dragged = false;
+            google.maps.event.addListener(marker, 'drag', function() {
+                dragged = true;
+            });
+            google.maps.event.addListener(marker, 'mouseup', function() {
+                if (dragged == true) {
+                    dragged = false;
+                    lookup_district(map, marker.getPosition());
+                }
+            });
+
+            $.ajax({
+                url: "{% url districts_lookup %}?" +
+                    "lat=" + lat_lng.lat() + "&lng=" + lat_lng.lng(),
+                success: function(data) {
+                    $(document).trigger('districtsReceived', data);
+                    if (data.house) {
+                        add_overlay(map, data.house.coordinates, "#FF0000");
+                    }
+
+                    if (data.senate) {
+                        add_overlay(map, data.senate.coordinates, "#0000FF");
+                    }
+                }
+            });
+        }
+
+        function initialize_district_map() {
+            var lat_lng;
+            if (google.loader.ClientLocation) {
+                lat_lng = new google.maps.LatLng(
+                    google.loader.ClientLocation.latitude,
+                    google.loader.ClientLocation.longitude);
+            } else {
+                lat_lng = new google.maps.LatLng(37.0625, -95.677);
+            }
+
+            var options = {
+                zoom: 10,
+                center: lat_lng,
+                disableDefaultUI: true,
+                zoomControl: true,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            var map = new google.maps.Map(document.getElementById("districts_map_canvas"), options);
+            tt.districts.setMap(map);
+
+            //disable initial lookup
+            //lookup_district(map, lat_lng);
+        }
+
+        google.load("maps", "3.x", {
+            other_params: "sensor=false",
+            callback: initialize_district_map
+        });
+
+        tt.districts = function(){
+            var elem, height, map, width, liveUpdates;
+            function _init(options){
+                elem = $('#districts_map_canvas');
+                height = elem.height();
+                width = elem.width();
+                liveUpdates = true;
+            };
+            function setMap(newMap){
+                if (newMap === undefined) {
+                    return map;
+                }
+                map = newMap;
+            }
+            function setHeight(newHeight){
+                if (newHeight === undefined) {
+                    return height;
+                }
+                height = newHeight;
+                elem.height(height);
+                google.maps.event.trigger(map, 'resize');
+            }
+            setWidth= function(newWidth){
+                if (newWidth === undefined) {
+                    return width;
+                }
+                width = newWidth;
+                elem.width(width);
+                google.maps.event.trigger(map, 'resize');
+            };
+            search = function(address) {
+                var geocoder = new google.maps.Geocoder();
+                var params = {
+                    address: address,
+                    region: 'US'
+                };
+                geocoder.geocode(params, function(results, status) {
+                    if(status == google.maps.GeocoderStatus.OK) {
+                        lookup_district(map, results[0].geometry.location);
+                        $(document).trigger('districtsGeocoded', results[0].geometry);
+                    };
+                });
+            };
+            _init();
+            return {
+                setMap: setMap,
+                height: setHeight,
+                width: setWidth,
+                search: search
+            }
+        }();
+
+    </script>
