@@ -1,5 +1,4 @@
 from django.contrib.gis.db import models
-from django.db.models.signals import post_syncdb
 
 HOUSE = 'HOUSE'
 SENATE = 'SENATE'
@@ -8,6 +7,7 @@ DISTRICT_TYPES = (
     (HOUSE, 'House'),
     (SENATE, 'Senate'),
 )
+
 
 class DistrictManager(models.GeoManager):
     def filter_by_lat_lng(self, lat, lng):
@@ -22,7 +22,7 @@ class District(models.Model):
     GeoDjango setup
     """
     objects = DistrictManager()
-    
+
     type = models.CharField(max_length=100, choices=DISTRICT_TYPES)
     number = models.IntegerField()
     year = models.IntegerField()
@@ -36,5 +36,5 @@ class District(models.Model):
         ordering = ('type', 'number')
 
     def save(self, *args, **kwargs):
-        raise NotImplementedError, \
-            'Districts should only be loaded from shapefiles'
+        raise NotImplementedError(
+            'Districts should only be loaded from shapefiles')

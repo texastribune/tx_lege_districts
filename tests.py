@@ -1,11 +1,10 @@
 import json
 
 from django.test import TestCase
-from django.db import connections
-from django.core.management import call_command
 from django.core.urlresolvers import reverse
 
 from districts.models import District, HOUSE, SENATE
+
 
 class DistrictsTest(TestCase):
     multi_db = True

@@ -1,12 +1,12 @@
 import json
 
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
-from django.contrib.gis.maps.google.overlays import GPolygon
 
 from .models import District
 from .models import HOUSE, SENATE
+
 
 def lookup(request):
     """
@@ -26,8 +26,9 @@ def lookup(request):
             coordinates = json.loads(district.geometry.geojson)['coordinates']
             data[type.lower()] = {
                     'name': unicode(district).encode('utf-8'),
-                    'number': district.number, 
-                    'coordinates': coordinates }
+                    'number': district.number,
+                    'coordinates': coordinates
+                }
         except District.DoesNotExist:
             pass
 
@@ -36,4 +37,5 @@ def lookup(request):
 
 def map(request):
     return render_to_response('districts/includes/map.html', {
-            'lookup_url': reverse('districts_lookup') })
+            'lookup_url': reverse('districts_lookup')
+        })
