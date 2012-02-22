@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from districts.models import District, HOUSE, SENATE
+from .models import District, HOUSE, SENATE
 
 
 class DistrictsTest(TestCase):
@@ -28,7 +28,7 @@ class DistrictsTest(TestCase):
         self.assertEqual(austin_districts.get(type=HOUSE).number, 48)
 
     def test_lookup(self):
-        url = reverse('districts_lookup')
+        url = reverse('lege_districts_lookup')
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
