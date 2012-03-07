@@ -8,6 +8,15 @@ DISTRICT_TYPES = (
     (SENATE, 'Senate'),
 )
 
+CURRENT = 'CURRENT'
+REMEDIAL = 'REMEDIAL'
+INTERIM = 'INTERIM'
+STATUSES = (
+    (CURRENT, 'Current'),
+    (REMEDIAL, 'Remedial'),
+    (INTERIM, 'Interim'),
+)
+
 
 class DistrictManager(models.GeoManager):
     def filter_by_lat_lng(self, lat, lng):
@@ -24,6 +33,8 @@ class District(models.Model):
     objects = DistrictManager()
 
     type = models.CharField(max_length=100, choices=DISTRICT_TYPES)
+    status = models.CharField(
+        max_length=100, choices=STATUSES, default=CURRENT)
     number = models.IntegerField()
     year = models.IntegerField()
     geometry = models.MultiPolygonField()
