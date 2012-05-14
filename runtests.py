@@ -11,8 +11,8 @@ except ImportError:
 settings.configure(
         DEBUG=False,
         DATABASES=DATABASES,
-        INSTALLED_APPS=('lege_districts',),
-        ROOT_URLCONF='lege_districts.urls',
+        INSTALLED_APPS=('tx_lege_districts',),
+        ROOT_URLCONF='tx_lege_districts.urls',
         )
 
 from django.test.utils import get_runner
@@ -21,7 +21,7 @@ from django.test.utils import get_runner
 def run_tests():
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=1, interactive=True)
-    failures = test_runner.run_tests(['lege_districts'])
+    failures = test_runner.run_tests(['tx_lege_districts'])
     sys.exit(bool(failures))
 
 if __name__ == '__main__':

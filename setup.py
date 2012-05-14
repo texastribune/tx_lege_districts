@@ -23,16 +23,16 @@ def find_packages(path, base=""):
             packages.update(find_packages(dir, module_name))
     return packages
 
-setup(name='lege_districts',
+setup(name='tx_lege_districts',
       version='0.1.0',
       description='Django app for Texas legislative districts',
       author='Texas Tribune',
       author_email='tech@texastribune.org',
-      url='http://github.com/texastribune/lege_districts/',
+      url='http://github.com/texastribune/tx_lege_districts/',
       license='LICENSE',
       packages=find_packages('.').keys(),
       package_data={
-          'lege_districts': [
+          'tx_lege_districts': [
               'fixtures/*.json',
               'templates/*.html',
               'templates/*/*.html',
