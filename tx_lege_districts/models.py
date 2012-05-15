@@ -45,7 +45,3 @@ class District(models.Model):
     class Meta:
         unique_together = ('type', 'number')
         ordering = ('type', 'number')
-
-    def save(self, *args, **kwargs):
-        raise NotImplementedError(
-            'Districts should only be loaded from shapefiles')

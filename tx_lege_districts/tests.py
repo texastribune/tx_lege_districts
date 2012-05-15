@@ -14,10 +14,6 @@ class DistrictsTest(TestCase):
         district = District(number=1, type=HOUSE)
         self.assertEqual(u'House District 1', unicode(district))
 
-    def test_save_not_implemented(self):
-        district = District(number=1, type=HOUSE)
-        self.assertRaises(NotImplementedError, district.save)
-
     def test_count(self):
         self.assertEqual(District.objects.count(), 181)
 
