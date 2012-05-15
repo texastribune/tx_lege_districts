@@ -26,9 +26,7 @@ class DistrictManager(models.GeoManager):
 
 class District(models.Model):
     """
-    This is a geographic model, but the Geometry is should only be queried
-    inside spatialite in order to avoid all the dependencies of a full
-    GeoDjango setup
+    A legislative district in the State of Texas.
     """
     objects = DistrictManager()
 
