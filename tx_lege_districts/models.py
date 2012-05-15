@@ -8,12 +8,10 @@ DISTRICT_TYPES = (
     (SENATE, 'Senate'),
 )
 
-CURRENT = 'CURRENT'
 REMEDIAL = 'REMEDIAL'
 INTERIM = 'INTERIM'
 FINAL = 'FINAL'
 STATUSES = (
-    (CURRENT, 'Current'),
     (REMEDIAL, 'Remedial'),
     (INTERIM, 'Interim'),
     (FINAL, 'Final')
