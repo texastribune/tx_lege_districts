@@ -26,7 +26,7 @@ def find_packages(path, base=""):
 setup(name='tx_lege_districts',
       version='0.1.0',
       description='Django app for Texas legislative districts',
-      author='Texas Tribune',
+      author='The Texas Tribune',
       author_email='tech@texastribune.org',
       url='http://github.com/texastribune/tx_lege_districts/',
       license='LICENSE',
@@ -47,6 +47,6 @@ setup(name='tx_lege_districts',
           'License :: OSI Approved :: Apache Software License',
           'Operating System :: OS Independent',
           'Programming Language :: Python',
-          'Topic :: Other/NonlistedTopic'
+          'Topic :: Other/Nonlisted Topic'
           ],
       )
