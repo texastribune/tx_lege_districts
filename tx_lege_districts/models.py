@@ -42,5 +42,5 @@ class District(models.Model):
         return u'%s District %d' % (self.get_type_display(), self.number)
 
     class Meta:
-        unique_together = ('type', 'number')
+        unique_together = ('type', 'number', 'year')
         ordering = ('type', 'number')

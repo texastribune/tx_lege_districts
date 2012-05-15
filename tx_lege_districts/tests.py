@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from .models import District, HOUSE, SENATE
+from .models import District, HOUSE, SENATE, INTERIM
 
 
 class DistrictsTest(TestCase):
@@ -22,6 +22,13 @@ class DistrictsTest(TestCase):
         self.assertEqual(austin_districts.count(), 2)
         self.assertEqual(austin_districts.get(type=SENATE).number, 14)
         self.assertEqual(austin_districts.get(type=HOUSE).number, 48)
+
+    def test_unique_constraint(self):
+        district = District.objects.get(number=1, type=HOUSE, year=2006)
+        District.objects.create(number=1, type=HOUSE, year=2012, status=INTERIM,
+                                geometry=district.geometry)
+        qs = District.objects.filter(number=1, type=HOUSE)
+        self.assertEqual(qs.count(), 2)
 
     def test_lookup(self):
         url = reverse('tx_lege_districts_lookup')
