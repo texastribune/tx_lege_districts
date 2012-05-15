@@ -3,7 +3,8 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from .models import District, HOUSE, SENATE, INTERIM
+from .models import District
+from .constants import HOUSE, SENATE, INTERIM
 
 
 class DistrictsTest(TestCase):

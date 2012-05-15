@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 
 from .models import District
-from .models import HOUSE, SENATE
+from .constants import HOUSE, SENATE
 
 
 def lookup(request):

@@ -1,21 +1,6 @@
 from django.contrib.gis.db import models
 
-HOUSE = 'HOUSE'
-SENATE = 'SENATE'
-
-DISTRICT_TYPES = (
-    (HOUSE, 'House'),
-    (SENATE, 'Senate'),
-)
-
-REMEDIAL = 'REMEDIAL'
-INTERIM = 'INTERIM'
-FINAL = 'FINAL'
-STATUSES = (
-    (REMEDIAL, 'Remedial'),
-    (INTERIM, 'Interim'),
-    (FINAL, 'Final')
-)
+from .constants import TYPE_CHOICES, STATUS_CHOICES
 
 
 class DistrictManager(models.GeoManager):
@@ -30,8 +15,8 @@ class District(models.Model):
     """
     objects = DistrictManager()
 
-    type = models.CharField(max_length=100, choices=DISTRICT_TYPES)
-    status = models.CharField(max_length=100, choices=STATUSES)
+    type = models.CharField(max_length=100, choices=TYPE_CHOICES)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES)
     number = models.IntegerField()
     year = models.IntegerField()
     geometry = models.MultiPolygonField()
