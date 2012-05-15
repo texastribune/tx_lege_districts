@@ -33,8 +33,7 @@ class District(models.Model):
     objects = DistrictManager()
 
     type = models.CharField(max_length=100, choices=DISTRICT_TYPES)
-    status = models.CharField(
-        max_length=100, choices=STATUSES, default=CURRENT)
+    status = models.CharField(max_length=100, choices=STATUSES)
     number = models.IntegerField()
     year = models.IntegerField()
     geometry = models.MultiPolygonField()
