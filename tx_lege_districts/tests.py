@@ -1,13 +1,23 @@
 import json
 
 from django.test import TestCase
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from .models import District
 from .constants import HOUSE, SENATE, INTERIM
 
+DUMMY_DISTRICT_NUMBER = 201
+DUMMY_REPRESENTATIVE = 'Test Representative'
 
-class DistrictsTest(TestCase):
+
+class DummyBackend(object):
+    def get_representative(self, district):
+        if district.number == DUMMY_DISTRICT_NUMBER:
+            return DUMMY_REPRESENTATIVE
+
+
+class TestDistricts(TestCase):
     multi_db = True
     fixtures = ['districts_2006']
 
@@ -46,3 +56,25 @@ class DistrictsTest(TestCase):
         self.assertEqual(data['house']['number'], 48)
         self.assertEqual('coordinates' in data['senate'], True)
         self.assertEqual('coordinates' in data['house'], True)
+
+
+class TestBackends(TestCase):
+    key = 'TX_REPRESENTATIVE_BACKENDS'
+    dummy_backends = ['tx_lege_districts.tests.DummyBackend']
+    district = District(number=DUMMY_DISTRICT_NUMBER)
+
+    def setUp(self):
+        if hasattr(settings, self.key):
+            self.original_backends = getattr(settings, self.key)
+            delattr(settings, self.key)
+
+    def tearDown(self):
+        if hasattr(self, 'original_backends'):
+            setattr(settings, self.key, self.original_backends)
+
+    def test_get_representative_returns_none_by_default(self):
+        self.assertEqual(self.district.representative, None)
+
+    def test_get_representative_with_simple_backend(self):
+        setattr(settings, self.key, self.dummy_backends)
+        self.assertEqual(self.district.representative, DUMMY_REPRESENTATIVE)

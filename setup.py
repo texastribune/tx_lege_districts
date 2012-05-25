@@ -30,6 +30,9 @@ setup(name='tx_lege_districts',
       author_email='tech@texastribune.org',
       url='http://github.com/texastribune/tx_lege_districts/',
       license='LICENSE',
+      install_requires=[
+        'armstrong.utils.backends',
+        ],
       packages=find_packages('.').keys(),
       package_data={
           'tx_lege_districts': [
