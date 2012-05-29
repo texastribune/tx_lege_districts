@@ -24,7 +24,7 @@ def find_packages(path, base=""):
     return packages
 
 setup(name='tx_lege_districts',
-      version='0.1.1',
+      version='0.2.0',
       description='Django app for Texas legislative districts',
       author='The Texas Tribune',
       author_email='tech@texastribune.org',
