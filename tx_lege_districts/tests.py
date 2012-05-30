@@ -17,9 +17,38 @@ class DummyBackend(object):
             return DUMMY_REPRESENTATIVE
 
 
-class TestDistricts(TestCase):
+class DeleteSettingMixin(object):
+    """
+    Deletes any settings specified in the `delete_keys` property while
+    preserving them in the `_original_settings` dict.
+
+    The original settings are restored after each test case.
+    """
+    def setUp(self):
+        self._original_settings = {}
+        for key in self.delete_keys:
+            if hasattr(settings, key):
+                self._original_settings[key] = getattr(settings, key)
+
+                # Delete will fail for built-in Django default settings
+                try:
+                    delattr(settings, key)
+                except AttributeError:
+                    pass
+
+    def tearDown(self):
+        for key in self.delete_keys:
+            if key in self._original_settings:
+                setattr(settings, key, self._original_settings[key])
+
+
+class TestDistricts(DeleteSettingMixin, TestCase):
     multi_db = True
     fixtures = ['districts_2006']
+    dummy_backends = ['tx_lege_districts.tests.DummyBackend']
+    district = District(number=DUMMY_DISTRICT_NUMBER)
+    representatives_key = 'TX_REPRESENTATIVE_BACKENDS'
+    delete_keys = [representatives_key]
 
     def test_unicode(self):
         district = District(number=1, type=HOUSE)
@@ -57,24 +86,9 @@ class TestDistricts(TestCase):
         self.assertEqual('coordinates' in data['senate'], True)
         self.assertEqual('coordinates' in data['house'], True)
 
-
-class TestBackends(TestCase):
-    key = 'TX_REPRESENTATIVE_BACKENDS'
-    dummy_backends = ['tx_lege_districts.tests.DummyBackend']
-    district = District(number=DUMMY_DISTRICT_NUMBER)
-
-    def setUp(self):
-        if hasattr(settings, self.key):
-            self.original_backends = getattr(settings, self.key)
-            delattr(settings, self.key)
-
-    def tearDown(self):
-        if hasattr(self, 'original_backends'):
-            setattr(settings, self.key, self.original_backends)
-
     def test_get_representative_returns_none_by_default(self):
         self.assertEqual(self.district.representative, None)
 
     def test_get_representative_with_simple_backend(self):
-        setattr(settings, self.key, self.dummy_backends)
+        setattr(settings, self.representatives_key, self.dummy_backends)
         self.assertEqual(self.district.representative, DUMMY_REPRESENTATIVE)
