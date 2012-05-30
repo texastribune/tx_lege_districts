@@ -48,7 +48,8 @@ class TestDistricts(DeleteSettingMixin, TestCase):
     dummy_backends = ['tx_lege_districts.tests.DummyBackend']
     district = District(number=DUMMY_DISTRICT_NUMBER)
     representatives_key = 'TX_REPRESENTATIVE_BACKENDS'
-    delete_keys = [representatives_key]
+    url_key = 'ABSOLUTE_URL_OVERRIDES'
+    delete_keys = [url_key, representatives_key]
 
     def test_unicode(self):
         district = District(number=1, type=HOUSE)
@@ -92,3 +93,14 @@ class TestDistricts(DeleteSettingMixin, TestCase):
     def test_get_representative_with_simple_backend(self):
         setattr(settings, self.representatives_key, self.dummy_backends)
         self.assertEqual(self.district.representative, DUMMY_REPRESENTATIVE)
+
+    def test_get_absolute_url_not_implemented(self):
+        district = District(number=1, type=HOUSE)
+        self.assertRaises(NotImplementedError, district.get_absolute_url)
+
+    def test_get_absolute_url_can_be_overriden(self):
+        district = District(number=1, type=HOUSE)
+        get_district_url = lambda d: '/districts/%d/' % d.number
+        setattr(settings, self.url_key,
+                {'tx_lege_districts.district': get_district_url})
+        self.assertEqual(district.get_absolute_url(), '/districts/1/')

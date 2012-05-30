@@ -40,3 +40,6 @@ class District(models.Model):
             return backend.get_representative(self)
         except (ImproperlyConfigured, DID_NOT_HANDLE):
             return None
+
+    def get_absolute_url(self):
+        raise NotImplementedError
