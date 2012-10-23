@@ -24,7 +24,8 @@ def lookup(request):
         data[district.type.lower()] = {
             'name': unicode(district).encode('utf-8'),
             'number': district.number,
-            'coordinates': coordinates
+            'coordinates': coordinates,
+            'year': district.year,
         }
 
     return HttpResponse(json.dumps(data), mimetype='application/json')
