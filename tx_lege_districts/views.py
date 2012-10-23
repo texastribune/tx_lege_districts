@@ -5,7 +5,6 @@ from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 
 from .models import District
-from .constants import HOUSE, SENATE
 
 
 def lookup(request):
@@ -19,18 +18,14 @@ def lookup(request):
     except (TypeError, ValueError):
         return HttpResponse(json.dumps(data), mimetype='application/json')
 
-    districts = District.objects.filter_by_lat_lng(lat, lng)
-    for type in (HOUSE, SENATE):
-        try:
-            district = districts.get(type=type)
-            coordinates = json.loads(district.geometry.geojson)['coordinates']
-            data[type.lower()] = {
-                    'name': unicode(district).encode('utf-8'),
-                    'number': district.number,
-                    'coordinates': coordinates
-                }
-        except District.DoesNotExist:
-            pass
+    for district in District.objects.filter_by_lat_lng(lat, lng):
+        geojson = district.geometry.simplify(0.0001).geojson
+        coordinates = json.loads(geojson)['coordinates']
+        data[district.type.lower()] = {
+            'name': unicode(district).encode('utf-8'),
+            'number': district.number,
+            'coordinates': coordinates
+        }
 
     return HttpResponse(json.dumps(data), mimetype='application/json')
 
