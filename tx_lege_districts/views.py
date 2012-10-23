@@ -37,5 +37,5 @@ def lookup(request):
 
 def map(request):
     return render_to_response('districts/includes/map.html', {
-            'lookup_url': reverse('districts_lookup')
+            'lookup_url': reverse('tx_lege_districts_lookup')
         })
