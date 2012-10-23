@@ -10,6 +10,13 @@ TYPE_CHOICES = (
     (SBOE, 'State Board of Education'),
 )
 
+PLAN_TYPES = {
+    'H': HOUSE,
+    'S': SENATE,
+    'C': CONGRESS,
+    'E': SBOE,
+}
+
 REMEDIAL = 'REMEDIAL'
 INTERIM = 'INTERIM'
 FINAL = 'FINAL'
