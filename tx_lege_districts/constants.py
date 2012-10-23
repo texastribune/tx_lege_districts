@@ -1,10 +1,12 @@
 HOUSE = 'HOUSE'
 SENATE = 'SENATE'
+CONGRESS = 'CONGRESS'
 SBOE = 'SBOE'
 
 TYPE_CHOICES = (
     (HOUSE, 'House'),
     (SENATE, 'Senate'),
+    (CONGRESS, 'Congress'),
     (SBOE, 'State Board of Education'),
 )
 
