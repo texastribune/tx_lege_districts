@@ -53,7 +53,7 @@ class TestDistricts(DeleteSettingMixin, TestCase):
 
     def test_unicode(self):
         district = District(number=1, type=HOUSE)
-        self.assertEqual(u'House District 1', unicode(district))
+        self.assertEqual(u'Texas House District 1', unicode(district))
 
     def test_count(self):
         self.assertEqual(District.objects.count(), 181)

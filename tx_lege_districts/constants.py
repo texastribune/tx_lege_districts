@@ -4,9 +4,9 @@ CONGRESS = 'CONGRESS'
 SBOE = 'SBOE'
 
 TYPE_CHOICES = (
-    (HOUSE, 'House'),
-    (SENATE, 'Senate'),
-    (CONGRESS, 'Congress'),
+    (HOUSE, 'Texas House'),
+    (SENATE, 'Texas Senate'),
+    (CONGRESS, 'Congressional'),
     (SBOE, 'State Board of Education'),
 )
 
