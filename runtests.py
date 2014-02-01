@@ -2,15 +2,12 @@ import sys
 
 from django.conf import settings
 
-try:
-    from local_settings import DATABASES
-except ImportError:
-    raise RuntimeError('You must provide a local_settings.py with a DATABASES '
-                       'setting containing your GIS-capable database backend.')
+import dj_database_url
+
 
 settings.configure(
         DEBUG=False,
-        DATABASES=DATABASES,
+        DATABASES={'default': dj_database_url.config()},
         INSTALLED_APPS=('tx_lege_districts',),
         ROOT_URLCONF='tx_lege_districts.urls',
         )

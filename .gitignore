@@ -5,6 +5,7 @@ settings/local.py
 *.psd
 /tags
 /data
+.env
 .~*
 common/CACHE
 .dropbox.attr
