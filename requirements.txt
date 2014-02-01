@@ -1,0 +1,4 @@
+django<1.6
+dj-database-url==0.2.2
+psycopg2==2.5.2
+armstrong.utils.backends==1.0.0
