@@ -20,16 +20,19 @@ class URLTests(TestCase):
 
     def test_lookup(self):
         url = reverse('tx_lege_districts:lookup')
-        response = self.client.get(url, {'lat': '30', 'lng': '-100'})
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        self.assertTrue(data)
 
-    def test_lookup_returns_empty_with_no_data(self):
-        url = reverse('tx_lege_districts:lookup')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '{}')
+        data = json.loads(response.content)
+        self.assertEqual(data, {})
+
+        response = self.client.get(url, {'lat': '30.3037', 'lng': '-97.7696'})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['senate']['number'], 14)
+        self.assertEqual(data['house']['number'], 48)
+        self.assertEqual('coordinates' in data['senate'], True)
+        self.assertEqual('coordinates' in data['house'], True)
 
     def test_map(self):
         url = reverse('tx_lege_districts:map')
