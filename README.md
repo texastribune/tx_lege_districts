@@ -5,9 +5,19 @@ A reusable Django app for working with Texas legislative districts.
 
 ### Usage
 
-Add `tx_lege_districts` to your `INSTALLED_APPS`. Then configure a GIS-enabled database and load the districts you want from a fixture:
+Add `tx_lege_districts` to your `INSTALLED_APPS`. Then configure a GIS-enabled
+database and load the districts you want from a fixture:
 
     python manage.py loaddata districts_2006
+
+Hookup the urls in the `tx_lege_districts` [namespace]:
+
+    urlpatterns = patterns('',
+        url('^lege\-districts/', include('tx_lege_districts.urls',
+                namespace='tx_lege_districts')),
+    )
+
+[namespace]: https://docs.djangoproject.com/en/dev/topics/http/urls/#url-namespaces-and-included-urlconfs
 
 
 ### Representatives
