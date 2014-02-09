@@ -44,7 +44,7 @@ class TestDistricts(TestCase):
         self.assertEqual(qs.count(), 2)
 
     def test_lookup(self):
-        url = reverse('tx_lege_districts_lookup')
+        url = reverse('tx_lege_districts:lookup')
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
