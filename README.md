@@ -23,3 +23,23 @@ The representative can be handled in your own project using a a configurable bac
 
     # settings.py
     TX_REPRESENTATIVE_BACKENDS = ['myapp.backends.MyBackend']
+
+
+## Testing
+
+Set the DATABASE_URL environment variable. Example:
+
+    export DATABASE_URL=postgis:///tx_lege_districts
+
+### Change template1 to be postgis enabled:
+
+    psql template1
+
+    CREATE EXTENSION postgis;
+    CREATE EXTENSION postgis_topology;
+
+Just use `DROP EXTENSION` if you want to go back.
+
+### Run the test runner:
+
+    python runtests.py
