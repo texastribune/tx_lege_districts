@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 urlpatterns = patterns('tx_lege_districts.views',
     url('^by-number/$', 'by_number', name='tx_lege_districts_by_number'),

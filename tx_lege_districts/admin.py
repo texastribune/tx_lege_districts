@@ -1,5 +1,6 @@
 from django.contrib.gis import admin
-from models import District
+
+from .models import District
 
 
 class DistrictAdmin(admin.GeoModelAdmin):
