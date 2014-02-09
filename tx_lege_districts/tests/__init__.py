@@ -3,8 +3,8 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from .models import District
-from .constants import HOUSE, SENATE, INTERIM
+from ..models import District
+from ..constants import HOUSE, SENATE, INTERIM
 
 DUMMY_DISTRICT_NUMBER = 201
 DUMMY_REPRESENTATIVE = 'Test Representative'
