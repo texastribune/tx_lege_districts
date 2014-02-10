@@ -7,6 +7,23 @@ from django.shortcuts import render_to_response, get_object_or_404
 from .models import District
 
 
+class JsonpResponse(HttpResponse):
+    """
+    Wrapper that sets the mimetype and adds a callback if necessary.
+
+    Usage: use this just like HttpResponse, but make sure you pass in content
+    and the request.
+    """
+    def __init__(self, content, request, mimetype='application/json',
+            *args, **kwargs):
+        callback = request.GET.get('callback')
+        if callback:
+            content = '{0}({1})'.format(callback, content)
+            mimetype = 'application/javascript'
+        super(JsonpResponse, self).__init__(content, mimetype,
+                *args, **kwargs)
+
+
 def lookup(request):
     """
     Returns a JSON-encoded view of the districts for the given lat/long
@@ -88,4 +105,4 @@ def district_detail(request, type, number):
         number=number,
     )
     data = district.geometry.simplify(simplify).geojson
-    return HttpResponse(data, mimetype='application/json')
+    return JsonpResponse(data, request=request)

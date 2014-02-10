@@ -3,6 +3,7 @@ from django.test import TestCase
 from ..models import District
 from ..constants import HOUSE, SENATE, INTERIM
 from .test_urls import *
+from .test_views import *
 
 DUMMY_DISTRICT_NUMBER = 201
 DUMMY_REPRESENTATIVE = 'Test Representative'
