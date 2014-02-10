@@ -2,7 +2,7 @@ import json
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 
 from .models import District
 
@@ -66,3 +66,26 @@ def map(request):
     return render_to_response('districts/includes/map.html', {
             'lookup_url': reverse('tx_lege_districts:lookup')
         })
+
+
+def district_detail(request, type, number):
+    """
+    Returns a geojson representation of a district.
+
+    /house/15/
+    /senate/3/
+
+    TODO: support jsonp
+    TODO: support year lookup
+
+    If we do multi-district lookups (in a list view), it should return a feature
+    object with meta in the "features" property.
+    See: http://geojson.org/geojson-spec.html#feature-objects
+    """
+    simplify = 0.001  # WISHLIST make this a get parameter
+    district = get_object_or_404(District,
+        type__iexact=type,
+        number=number,
+    )
+    data = district.geometry.simplify(simplify).geojson
+    return HttpResponse(data, mimetype='application/json')

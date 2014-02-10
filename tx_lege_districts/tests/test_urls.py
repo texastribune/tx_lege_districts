@@ -38,3 +38,16 @@ class URLTests(TestCase):
         url = reverse('tx_lege_districts:map')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_district_detail(self):
+        url = reverse('tx_lege_districts:api:district_detail', kwargs={
+            'type': 'senate',
+            'number': '14',
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        # assert response is geojson
+        data = json.loads(response.content)
+        self.assertIn('type', data)
+        self.assertIn('coordinates', data)
