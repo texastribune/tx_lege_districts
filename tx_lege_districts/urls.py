@@ -1,7 +1,7 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns('tx_lege_districts.views',
-    url('^by-number/$', 'by_number', name='tx_lege_districts_by_number'),
-    url('^lookup/$', 'lookup', name='tx_lege_districts_lookup'),
-    url('^map/$', 'map', name='tx_lege_districts_map'),
+    url('^by-number/$', 'by_number', name='by_number'),
+    url('^lookup/$', 'lookup', name='lookup'),
+    url('^map/$', 'map', name='map'),
 )

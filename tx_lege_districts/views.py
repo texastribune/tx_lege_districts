@@ -1,8 +1,8 @@
 import json
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from django.core.urlresolvers import reverse
 
 from .models import District
 
@@ -64,5 +64,5 @@ def by_number(request):
 
 def map(request):
     return render_to_response('districts/includes/map.html', {
-            'lookup_url': reverse('tx_lege_districts_lookup')
+            'lookup_url': reverse('tx_lege_districts:lookup')
         })
