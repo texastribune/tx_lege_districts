@@ -9,18 +9,18 @@ from .models import District
 
 class JsonpResponse(HttpResponse):
     """
-    Wrapper that sets the mimetype and adds a callback if necessary.
+    Wrapper that sets the content type and adds a callback if necessary.
 
     Usage: use this just like HttpResponse, but make sure you pass in content
     and the request.
     """
-    def __init__(self, content, request, mimetype='application/json',
+    def __init__(self, content, request, content_type='application/json',
             *args, **kwargs):
         callback = request.GET.get('callback')
         if callback:
             content = '{0}({1})'.format(callback, content)
-            mimetype = 'application/javascript'
-        super(JsonpResponse, self).__init__(content, mimetype,
+            content_type = 'application/javascript'
+        super(JsonpResponse, self).__init__(content, content_type,
                 *args, **kwargs)
 
 
@@ -33,7 +33,7 @@ def lookup(request):
         lat = float(request.GET.get('lat'))
         lng = float(request.GET.get('lng'))
     except (TypeError, ValueError):
-        return HttpResponse(json.dumps(data), mimetype='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
     for district in District.objects.filter_by_lat_lng(lat, lng):
         geojson = district.geometry.simplify(0.0001).geojson
@@ -45,7 +45,7 @@ def lookup(request):
             'year': district.year,
         }
 
-    return HttpResponse(json.dumps(data), mimetype='application/json')
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 def by_number(request):
@@ -76,7 +76,7 @@ def by_number(request):
             'year': district.year,
         })
 
-    return HttpResponse(json.dumps(data), mimetype='application/json')
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 def map(request):
