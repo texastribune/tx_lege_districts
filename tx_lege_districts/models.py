@@ -8,7 +8,7 @@ from .constants import TYPE_CHOICES, STATUS_CHOICES
 representative_backend = GenericBackend("TX_REPRESENTATIVE_BACKENDS")
 
 
-class DistrictManager(models.GeoManager):
+class DistrictManager(models.Manager):
     def filter_by_lat_lng(self, lat, lng):
         point_text = "POINT(%f %f)" % (lng, lat)
         return self.get_queryset().filter(geometry__contains=point_text)
