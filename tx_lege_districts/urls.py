@@ -12,6 +12,6 @@ urlpatterns = [
                         url('^district/(?P<type>\w+)/(?P<number>\d+)/$',
                             views.district_detail,
                             name='district_detail'),
-                    ])
+                    ], 'api')
         ),
 ]
